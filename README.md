@@ -15,6 +15,8 @@ O projeto deve rodar tanto em Linux quanto em Windows, desde que instaladas as d
 | PHP | 8.1.2
 | PHP PDO PostgreSQL | -
 
+[Wiki - Manual de utilização](https://github.com/filipebsantos/Pix-Verifier/wiki)
+
 ![Página de visualização](screenshot.png "Página de visualização")
 
 ## Como funciona
