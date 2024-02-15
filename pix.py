@@ -97,6 +97,13 @@ while True:
         try:
             response = requests.post(url, data=data, headers=headers, cert=(cert_path, key_path))
             response.raise_for_status()
+
+        except requests.exceptions.HTTPError as httpError:
+            if "500" in str(httpError):
+                logging.info("Servidor retornou erro 500. Aguardando 30s antes de uma nova tentativa")
+                time.sleep(30)
+                continue
+
         except requests.exceptions.RequestException as reqError:
             logging.info("Erro ao processar requisição.")
             logging.error(reqError)
@@ -137,6 +144,13 @@ while True:
         try:
             response = requests.get(url, headers=headers, params=filtros ,cert=(cert_path, key_path))
             response.raise_for_status()
+
+        except requests.exceptions.HTTPError as httpError:
+            if "500" in str(httpError):
+                logging.info("Servidor retornou erro 500. Aguardando 30s antes de uma nova consulta")
+                time.sleep(30)
+                continue
+
         except requests.exceptions.RequestException as reqError:
             logging.info("Erro ao processar requisição.")
             logging.error(reqError)
