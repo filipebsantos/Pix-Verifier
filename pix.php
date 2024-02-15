@@ -9,6 +9,8 @@
  *
  *******************************************************************************************/
 
+use Random\BrokenRandomEngineError;
+
 //Banco de Dados
 
 $db_server = '';
@@ -43,9 +45,17 @@ $consulta->closeCursor();
 
 
 if (isset($_POST['filter'])) {
+
+    // Agaga o cookie de paginação se existir
+    if (isset($_COOKIE['searchPagination'])){
+        setcookie('searchPagination', "", time() - 3600);
+    }
+    
     switch ($_POST['filter']) {
-            // Filtro por data
+
+        // Filtro por data
         case 'byDate':
+
             // Checa se as datas não estão vazias
             if (($_POST['dataInicio'] != "") && ($_POST['dataFim'] != "")) {
                 $dataHoje = new DateTime();
@@ -67,17 +77,41 @@ if (isset($_POST['filter'])) {
                 $msgError = "Infomar a data início e a data fim.";
             }
             break;
-            // Filtro por busca
-        case 'bySearch':
-            $bySearch = true;
-            $optSearch = $_POST['optSearchBy'];
-            $txtSearch = $_POST['txtSearchBy'];
 
-            if ($txtSearch == "") {
-                $msgError = "Informar o critério de busca.";
-                unset($bySearch);
-            }
+            // Filtro por busca
+            case 'bySearch':
+
+                $bySearch = true;
+                $optSearch = $_POST['optSearchBy'];
+                $txtSearch = $_POST['txtSearchBy'];
+
+                if ($txtSearch == "") {
+                    $msgError = "Informar o critério de busca.";
+                    unset($bySearch);
+                }
+                break;
+    }
+}
+
+if (isset($_GET['pagina'])) {
+    $pagina_atual = $_GET['pagina'];
+
+    if (isset($_COOKIE['searchPagination'])) {
+        $cookieValues = json_decode($_COOKIE['searchPagination'], true);
+
+        switch ($cookieValues['type']) {
+            case 'byDate':
+                $dataInicio = date_create($cookieValues['dataInicio']);
+                $dataFim = date_create($cookieValues['dataFim']);
+                $byDate = true;
             break;
+
+            case 'bySearch':
+                $optSearch = $cookieValues['optSearch'];
+                $txtSearch = $cookieValues['txtSearch'];
+                $bySearch = true;
+            break;
+        }
     }
 }
 
@@ -95,7 +129,6 @@ if (isset($_POST['filter'])) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -115,7 +148,7 @@ if (isset($_POST['filter'])) {
             <div class="row">
                 <!-- Filtar por data -->
                 <div class="col-6">
-                    <form action="" class="row" method="POST">
+                    <form action="pix.php" class="row" method="POST">
                         <div class="col-5">
                             <input type="date" class="form-control" name="dataInicio">
                             <div id="emailHelp" class="form-text">Data Início</div>
@@ -132,7 +165,7 @@ if (isset($_POST['filter'])) {
                 </div>
                 <!-- Buscar por CPF/CNPJ -->
                 <div class="col-6">
-                    <form action="" class="row d-flex justify-content-end" method="POST">
+                    <form action="pix.php" class="row d-flex justify-content-end" method="POST">
                         <div class="col-5">
                             <div class="input-group">
                                 <span class="input-group-text">Buscar por:</span>
@@ -164,32 +197,115 @@ if (isset($_POST['filter'])) {
             </div>
 
             <?php
-            if (isset($byDate)) {
-                $statment = $database->prepare("SELECT * FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) BETWEEN :dataInicio AND :dataFim ORDER BY datainclusao ASC");
-                $statment->bindParam(":dataInicio", date_format($dataInicio, "Y-m-d"));
-                $statment->bindParam(":dataFim", date_format($dataFim, "Y-m-d"));
-                $statment->execute();
-                $resultado = $statment->fetchAll();
 
-                $captionTable = "Exibindo Pix recebido de " . date_format($dataInicio, "d/m/Y") . " até " . date_format($dataFim, "d/m/Y");
-            } else if (isset($bySearch)) {
-                $querySearch = $txtSearch . "%";
-                $statment = $database->prepare("SELECT * FROM receivedpix WHERE $optSearch LIKE :txtSearch ORDER BY datainclusao DESC");
-                $statment->bindParam(":txtSearch", $querySearch);
-                $statment->execute();
-                $resultado = $statment->fetchAll();
-
-                if ($optSearch === "cpfcnpjpagador") {
-                    $captionTable = "Resultado da busca por CPF/CNPJ contendo " . $txtSearch;
-                } else if ($optSearch === "e2eid") {
-                    $captionTable = "Resultado da busca por E2EID contendo " . $txtSearch;
+                if (!isset($pagina_atual)){
+                    $pagina_atual = 1;
                 }
-            } else {
-                $statment = $database->prepare("SELECT * FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) = :today ORDER BY datainclusao DESC");
-                $statment->bindParam(":today", date("Y-m-d"));
-                $statment->execute();
-                $resultado = $statment->fetchAll();
-            }
+
+                $resultadoPorPagina = 10;
+                $offset = ($pagina_atual - 1) * $resultadoPorPagina;
+
+                if (isset($byDate)) {
+                    // Obtem quantidade de registros
+                    $statment = $database->prepare("SELECT COUNT(*) FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) BETWEEN :dataInicio AND :dataFim");
+                    $statment->bindValue(":dataInicio", date_format($dataInicio, "Y-m-d"));
+                    $statment->bindValue(":dataFim", date_format($dataFim, "Y-m-d"));
+                    if ($statment->execute()){
+                        $qtdeRegistros = $statment->fetch();
+
+                        // Paginação dos registros
+                        $statment = $database->prepare("SELECT * FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) BETWEEN :dataInicio AND :dataFim ORDER BY datainclusao ASC LIMIT :resultadoPorPagina OFFSET :offset");
+                        $statment->bindValue(":dataInicio", date_format($dataInicio, "Y-m-d"));
+                        $statment->bindValue(":dataFim", date_format($dataFim, "Y-m-d"));
+                        $statment->bindParam(":resultadoPorPagina", $resultadoPorPagina);
+                        $statment->bindParam(":offset", $offset);
+                        $statment->execute();
+                        $resultado = $statment->fetchAll();
+
+                        $captionTable = "Exibindo Pix recebido de " . date_format($dataInicio, "d/m/Y") . " até " . date_format($dataFim, "d/m/Y");
+                    }
+                    
+                } else if (isset($bySearch)) {
+                    $querySearch = $txtSearch . "%";
+
+                    // Obtem quantidade de registros
+                    $statment = $database->prepare("SELECT COUNT(*) FROM receivedpix WHERE $optSearch LIKE :txtSearch");
+                    $statment->bindParam(":txtSearch", $querySearch);
+                    if ($statment->execute()) {
+                        $qtdeRegistros = $statment->fetch(); 
+
+                        // Paginação dos registros
+                        $statment = $database->prepare("SELECT * FROM receivedpix WHERE $optSearch LIKE :txtSearch ORDER BY datainclusao DESC LIMIT :resultadoPorPagina OFFSET :offset");
+                        $statment->bindParam(":txtSearch", $querySearch);
+                        $statment->bindParam(":resultadoPorPagina", $resultadoPorPagina);
+                        $statment->bindParam(":offset", $offset);
+                        if ($statment->execute()) {
+                            $resultado = $statment->fetchAll();
+
+                            if ($optSearch === "cpfcnpjpagador") {
+                                $captionTable = "Resultado da busca por CPF/CNPJ contendo " . $txtSearch;
+                            } else if ($optSearch === "e2eid") {
+                                $captionTable = "Resultado da busca por E2EID contendo " . $txtSearch;
+                            }
+                        }
+                    }                      
+                } else {
+                    // Agaga o cookie de paginação se existir
+                    if (isset($_COOKIE['searchPagination'])){
+                        setcookie('searchPagination', "", time() - 3600);
+                    }
+
+                    // Obtem quantidade de registros
+                    $statment = $database->prepare("SELECT COUNT(*) FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) = :today");
+                    $statment->bindValue(":today", date("Y-m-d"));
+                    if ($statment->execute()) {
+                        $qtdeRegistros = $statment->fetch();
+                        
+                        // Paginação dos registros
+                        $statment = $database->prepare("SELECT * FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) = :today ORDER BY datainclusao DESC LIMIT :resultadoPorPagina OFFSET :offset");
+                        $statment->bindValue(":today", date("Y-m-d"));
+                        $statment->bindParam(":resultadoPorPagina", $resultadoPorPagina);
+                        $statment->bindParam(":offset", $offset);
+                        $statment->execute();
+                        $resultado = $statment->fetchAll();
+
+                    } 
+                }
+
+                // Quantidade de páginas
+                if ($qtdeRegistros['count'] > $resultadoPorPagina) {
+                    $qtdePaginas = ceil($qtdeRegistros['count'] / $resultadoPorPagina);
+
+                    // Salva o cookie para auxiliar na paginação
+                    if (isset($byDate)){
+                        $cookieArray = ["type" => "byDate", "dataInicio" => date_format($dataInicio, "Y-m-d"), "dataFim" => date_format($dataFim, "Y-m-d")];
+                        setcookie("searchPagination", json_encode($cookieArray));
+                    }
+
+                    if (isset($bySearch)) {
+                        $cookieArray = ["type" => "bySearch", "txtSearch" => $txtSearch, "optSearch" => $optSearch];
+                        setcookie("searchPagination", json_encode($cookieArray));
+                    }
+                } else {
+                    $qtdePaginas = 1;
+                }
+
+                $qtdeMaxPaginas = 10; // Quantidade máxima de paginas exibidas na paginação
+                
+                // Define a página inical da paginação
+                $paginaInicial = $pagina_atual - (ceil($qtdeMaxPaginas / 2));
+                
+                if($paginaInicial < 1){
+                    $paginaInicial = 1;
+                }
+
+                // Define a página final da paginação
+                $paginaFinal = $paginaInicial + ($qtdeMaxPaginas - 1);
+
+                if($paginaFinal > $qtdePaginas) {
+                    $paginaFinal = $pagina_atual + ($qtdePaginas - $pagina_atual);
+                }
+
             ?>
             <!-- Tabela -->
             <div class="table-responsive">
@@ -242,6 +358,26 @@ if (isset($_POST['filter'])) {
                 Nenhum registro encontrado...
             <?php endif; ?>
         </div>
+        <!-- Paginação -->
+        <div class="container d-flex justify-content-center">
+            <?php if($qtdePaginas > 1): ?>
+            <nav aria-label="Páginas">
+                <ul class="pagination">
+                    <li class="page-item <?= ($paginaInicial - 1) < 1 ? "disabled" : "" ?>">
+                        <a class="page-link" href="<?= ($paginaInicial - 1) < 1 ? "#" : "pix.php?pagina=" . $paginaInicial - 1; ?>" aria-label="Anterior"><span aria-hidden="true">&laquo;</span></a>
+                    </li>
+                    
+                    <?php for($pagina = $paginaInicial; $pagina <= $paginaFinal; $pagina++): ?>
+                        <li class="page-item <?php if($pagina == $pagina_atual): ?> active <?php endif; ?>"><a class="page-link" href="pix.php?pagina=<?= $pagina ?>"><?= $pagina ?></a></li>
+                    <?php endfor; ?>
+                    
+                    <li class="page-item <?= ($paginaFinal + 1) > $qtdePaginas ? "disabled" : "" ?>">
+                        <a class="page-link" href="<?= ($paginaFinal + 1) > $qtdePaginas ? "#" : "pix.php?pagina=" . $paginaFinal + 1; ?>" aria-label="Próximo"><span aria-hidden="true">&raquo;</span></a>
+                    </li>
+                </ul>
+            </nav>
+            <?php endif; ?>
+        </div>
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -255,6 +391,7 @@ if (isset($_POST['filter'])) {
             endif; ?>
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
 </html>
