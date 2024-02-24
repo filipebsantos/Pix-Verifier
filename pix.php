@@ -1,4 +1,5 @@
 <?php
+
 /********************************************************************************************
  * Esse script gera a página de visualização das transferências recebidas via pix
  * e salva no banco de dados.
@@ -21,13 +22,13 @@ $consulta->closeCursor();
 if (isset($_POST['filter'])) {
 
     // Agaga o cookie de paginação se existir
-    if (isset($_COOKIE['searchPagination'])){
+    if (isset($_COOKIE['searchPagination'])) {
         setcookie('searchPagination', "", time() - 3600);
     }
-    
+
     switch ($_POST['filter']) {
 
-        // Filtro por data
+            // Filtro por data
         case 'byDate':
 
             // Checa se as datas não estão vazias
@@ -53,17 +54,17 @@ if (isset($_POST['filter'])) {
             break;
 
             // Filtro por busca
-            case 'bySearch':
+        case 'bySearch':
 
-                $bySearch = true;
-                $optSearch = $_POST['optSearchBy'];
-                $txtSearch = $_POST['txtSearchBy'];
+            $bySearch = true;
+            $optSearch = $_POST['optSearchBy'];
+            $txtSearch = $_POST['txtSearchBy'];
 
-                if ($txtSearch == "") {
-                    $msgError = "Informar o critério de busca.";
-                    unset($bySearch);
-                }
-                break;
+            if ($txtSearch == "") {
+                $msgError = "Informar o critério de busca.";
+                unset($bySearch);
+            }
+            break;
     }
 }
 
@@ -78,13 +79,13 @@ if (isset($_GET['pagina'])) {
                 $dataInicio = date_create($cookieValues['dataInicio']);
                 $dataFim = date_create($cookieValues['dataFim']);
                 $byDate = true;
-            break;
+                break;
 
             case 'bySearch':
                 $optSearch = $cookieValues['optSearch'];
                 $txtSearch = $cookieValues['txtSearch'];
                 $bySearch = true;
-            break;
+                break;
         }
     }
 }
@@ -225,25 +226,46 @@ if (isset($_GET['pagina'])) {
         </div>
         <!-- Paginação -->
         <div class="container d-flex justify-content-center">
-            <?php if($qtdePaginas > 1): ?>
-            <nav aria-label="Páginas">
-                <ul class="pagination">
-                    <li class="page-item <?= ($paginaInicial - 1) < 1 ? "disabled" : "" ?>">
-                        <a class="page-link" href="<?= ($paginaInicial - 1) < 1 ? "#" : "pix.php?pagina=" . $paginaInicial - 1; ?>" aria-label="Anterior"><span aria-hidden="true">&laquo;</span></a>
-                    </li>
-                    
-                    <?php for($pagina = $paginaInicial; $pagina <= $paginaFinal; $pagina++): ?>
-                        <li class="page-item <?php if($pagina == $pagina_atual): ?> active <?php endif; ?>"><a class="page-link" href="pix.php?pagina=<?= $pagina ?>"><?= $pagina ?></a></li>
-                    <?php endfor; ?>
-                    
-                    <li class="page-item <?= ($paginaFinal + 1) > $qtdePaginas ? "disabled" : "" ?>">
-                        <a class="page-link" href="<?= ($paginaFinal + 1) > $qtdePaginas ? "#" : "pix.php?pagina=" . $paginaFinal + 1; ?>" aria-label="Próximo"><span aria-hidden="true">&raquo;</span></a>
-                    </li>
-                </ul>
-            </nav>
+            <?php if ($qtdePaginas > 1) : ?>
+                <nav aria-label="Páginas">
+                    <ul class="pagination">
+                        <li class="page-item <?= ($paginaInicial - 1) < 1 ? "disabled" : "" ?>">
+                            <a class="page-link" href="<?= ($paginaInicial - 1) < 1 ? "#" : "pix.php?pagina=" . $paginaInicial - 1; ?>" aria-label="Anterior"><span aria-hidden="true">&laquo;</span></a>
+                        </li>
+
+                        <?php for ($pagina = $paginaInicial; $pagina <= $paginaFinal; $pagina++) : ?>
+                            <li class="page-item <?php if ($pagina == $pagina_atual) : ?> active <?php endif; ?>"><a class="page-link" href="pix.php?pagina=<?= $pagina ?>"><?= $pagina ?></a></li>
+                        <?php endfor; ?>
+
+                        <li class="page-item <?= ($paginaFinal + 1) > $qtdePaginas ? "disabled" : "" ?>">
+                            <a class="page-link" href="<?= ($paginaFinal + 1) > $qtdePaginas ? "#" : "pix.php?pagina=" . $paginaFinal + 1; ?>" aria-label="Próximo"><span aria-hidden="true">&raquo;</span></a>
+                        </li>
+                    </ul>
+                </nav>
             <?php endif; ?>
         </div>
     </main>
+
+    <footer class="py-3 my-4 border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-left mb-3 mb-md-0">
+                    <a href="/" class="text-body-secondary text-decoration-none">
+                        <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+                    </a>
+                    <span class="text-body-secondary">&copy; <?= date("Y") ?> Pix Verifier</span>
+                </div>
+    
+                <div class="col-md-6 text-md-end">
+                    <span class="text-body-secondary">Desenvolvido por <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="http://filipebezerra.dev.br" target="_blank" rel="noopener noreferrer">filipebezerra&#60;/dev&#62;&#60;br&#62;</a></span>
+                    <div>
+                        <span class="fw-light text-body-tertiary">Essa solução te ajudou? Considere uma <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="https://filipebezerra.dev.br/apoio/" target="_blank" rel="noopener noreferrer">doação</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Verifique se há mensagens de erro na sessão e exiba a mensagem
