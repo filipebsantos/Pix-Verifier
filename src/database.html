@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/webp" href="logo.webp">
+    <title>Erro de Conexão com o Banco de Dados</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f8f8;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .error-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #e74c3c;
+        }
+
+        p {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>Sem conexão ao banco de dados</h1>
+        <br>
+        <p>Verifique nas configurações se as variáveis de ambiente para conexão foram fornecidas e estão corretas ou se o serviço de banco de dados está disponível.</p>
+    </div>
+    <br>
+    <a class="btn btn-primary" href="index.php">Tentar novamente</a>
+</body>
+</html>

@@ -1,0 +1,48 @@
+services:
+  postgresql:
+    image: postgres:16-alpine3.19
+    hostname: postgresql
+    container_name: postgresql
+    restart: unless-stopped
+    environment:
+      - TZ=America/Fortaleza
+      - POSTGRES_DB=pix
+      - POSTGRES_USER=pixverifier
+      - POSTGRES_PASSWORD=pix*verifier
+    volumes:
+      - PostgreSQL_Data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - pixverifier_network
+
+  pix-verifier:
+    image: filipebezerrasantos/pix-verifier:v1.2
+    hostname: pix-verifier
+    container_name: pix-verifier
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+    environment:
+      - TZ=America/Fortaleza
+      - DB_HOST=postgresql
+      - DB_NAME=pix
+      - DB_USER=pixverifier
+      - DB_PASS=pix*verifier
+    volumes:
+      - Pix-Verifier_Certs:/var/www/html/services/certs
+    networks:
+      - pixverifier_network
+    ports:
+      - 80:80
+
+volumes:
+  PostgreSQL_Data:
+    name: PostgreSQL_Data
+  Pix-Verifier_Certs:
+    name: Pix-Verifier_Certs
+
+networks:
+  pixverifier_network:
+    name: pixverifier_network
+    
+    
