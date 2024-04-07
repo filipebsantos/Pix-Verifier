@@ -10,9 +10,9 @@
  *
  *******************************************************************************************/
 
-require(__DIR__ . '/includes/inc.database.php');
-require(__DIR__ . '/includes/inc.functions.php');
-require(__DIR__ . '/controller/supervisor.php');
+require_once(__DIR__ . '/includes/inc.database.php');
+require_once(__DIR__ . '/includes/inc.functions.php');
+require_once(__DIR__ . '/controller/supervisor.php');
 
 $consulta = $database->query("SELECT value FROM settings WHERE key = 'ULTIMA_ATUALIZACAO'");
 $resultado = $consulta->fetch();
@@ -95,6 +95,8 @@ if (isset($_GET['pagina'])) {
         }
     }
 }
+
+require_once(__DIR__ . '/includes/inc.queries.php');
 
 ?>
 <!DOCTYPE html>
@@ -182,8 +184,6 @@ if (isset($_GET['pagina'])) {
                 </div>
             </div>
 
-            <?php require(__DIR__ . '/includes/inc.queries.php'); ?>
-
             <!-- Tabela -->
             <div class="table-responsive">
                 <table class="table table-striped align-middle table-sm caption-top">
@@ -257,7 +257,7 @@ if (isset($_GET['pagina'])) {
         </div>
     </main>
 
-    <?php include(__DIR__ . '/includes/inc.footer.php'); ?>
+    <?php include_once(__DIR__ . '/includes/inc.footer.php'); ?>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

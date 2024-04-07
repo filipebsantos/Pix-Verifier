@@ -16,7 +16,7 @@ services:
       - pixverifier_network
 
   pix-verifier:
-    image: filipebezerrasantos/pix-verifier:v1.2
+    image: filipebezerrasantos/pix-verifier:v1.2.1
     hostname: pix-verifier
     container_name: pix-verifier
     restart: unless-stopped

@@ -14,7 +14,7 @@
         $statment->bindValue(":dataFim", date_format($dataFim, "Y-m-d"));
         if ($statment->execute()){
             $qtdeRegistros = $statment->fetch();
-
+            
             // Paginação dos registros
             $statment = $database->prepare("SELECT * FROM receivedpix WHERE DATE_TRUNC('day', datainclusao) BETWEEN :dataInicio AND :dataFim ORDER BY datainclusao ASC LIMIT :resultadoPorPagina OFFSET :offset");
             $statment->bindValue(":dataInicio", date_format($dataInicio, "Y-m-d"));

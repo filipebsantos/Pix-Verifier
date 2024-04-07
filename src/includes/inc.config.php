@@ -8,5 +8,5 @@
     define('db_user', getenv('DB_USER') ?: 'postgres');
     define('db_pass', getenv('DB_PASS') ?: 'postgres');
 
-    define('appVersion', '1.2');
+    define('appVersion', '1.2.1');
 ?>
