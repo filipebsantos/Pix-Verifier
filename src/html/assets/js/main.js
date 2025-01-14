@@ -33,7 +33,7 @@ async function autoUpdate() {
             const [day, month, year] = datePart.split("/");
             const timestamp = `${year}-${month}-${day} ${timePart}`;
 
-            await fetchLastTransactions('1', timestamp);
+            await fetchLastTransactions(accountSelector.options[accountSelector.selectedIndex].value, timestamp);
         }
     }
 
