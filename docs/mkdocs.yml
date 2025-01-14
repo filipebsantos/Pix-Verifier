@@ -1,0 +1,66 @@
+site_name: Pix Verifier
+site_url: https://filipebezerra.dev.br/docs/pixverifier
+repo_url: https://github.com/filipebsantos/Pix-Verifier
+repo_name: filipebsantos/Pix-Verifier
+nav:
+  - Início: index.md
+  - Primeiros Passos:
+    - Instalação: firsts-steps/install.md
+    - Windows: firsts-steps/windows-install.md
+    - Linux: firsts-steps/linux-install.md
+  - Bancos: 
+    - Visão Geral: banks/overview.md
+    - Banco Inter: banks/inter.md
+  - Manual de utilização:
+    - Página Principal: manual/index.md
+    - Painel Administrativo: manual/admin-panel.md
+  - Integração: integration.md
+
+theme:
+    name: material
+    language: pt-BR
+    palette:
+        #darkmode
+        - scheme: slate
+          primary: teal
+          toggle:
+            icon: material/weather-sunny
+            name: Light Mode
+
+        #lightmode
+        - scheme: default
+          primary: teal
+          toggle:
+            icon: material/weather-night
+            name: Dark Mode
+    logo: img/small_logo.png
+    favicon: img/small_logo.png
+    icon:
+        repo: fontawesome/brands/github
+    features:
+        - navigation.footer
+        - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.highlight
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+
+extra:
+    social:
+        - icon: fontawesome/brands/instagram
+          link: https://instagram.com/filipebezerra.dev.br
+        - icon: fontawesome/brands/youtube
+          link: https://youtube.com.br/@filipepontodev
