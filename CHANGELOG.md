@@ -1,5 +1,15 @@
-# 2.0-rc
-## Recursos
+# Changelog
+
+## Não lançado
+
+### Adicionado
+
+### Corrigido
+- Bug no autoupdate que não exibia a última transaferência tão logo fosse recebida
+
+## 2.0-rc - 2025-01-14
+
+### Adicionado
 - Código fonte reescrito do zero
 - Interface melhorada
     - Notificações de aúdio
@@ -9,10 +19,3 @@
 - Multicontas
 - Nova interface administrativa
 - Código estruturado para facilitar a implantação de novos bancos
-
----
-## To-Do
-- Documentação de uso e integração
-- Completar documentação do código
-- Validações de campos antes de enviar ao backend
-- Refatorar arquivos com muitas responsabilidades
