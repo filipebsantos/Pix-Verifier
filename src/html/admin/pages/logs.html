@@ -1,0 +1,39 @@
+<div class="container d-flex mt-3" style="height: 80vh;">
+    <div class="d-flex" style="width: 280px;">
+        <select class="form-select" name="logSelector" id="logSelector" multiple aria-label="Multiple select example" style="height: 100%;"></select>
+    </div>
+    <div class="flex-fill">
+        <textarea name="logContent" id="logContent" style="width: 100%; height: 100%;" disabled>Escolha um log da lista ao lado com duplo clique para baixar seu conteúdo.</textarea>
+    </div>
+</div>
+<script src="../../assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../assets/js/jszip.min.js"></script>
+<script type="module">
+    import { logList, tailLog } from '../../assets/js/log.js';
+
+    const logSelector = document.getElementById('logSelector');
+    const logContent = document.getElementById('logContent');
+
+    function currentLogUpdate() {
+        if (logSelector && logSelector.options && logSelector.selectedIndex !== undefined) {
+            const selectedOption = logSelector.options[logSelector.selectedIndex];
+            if (selectedOption && selectedOption.value === "pix-service.log") {
+                // Update current log
+                tailLog(logContent, selectedOption.value);
+            }
+        }
+    }
+
+    logList(logSelector); // Get available log files
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setInterval(currentLogUpdate, 5000);
+    });
+
+    logSelector.addEventListener('dblclick', (event) => {
+        const selectedOption = event.target;
+        console.log(`Baixando arquivo ${selectedOption.value}...`);
+        tailLog(logContent, selectedOption.value);
+    });
+    
+</script>

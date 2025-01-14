@@ -1,0 +1,34 @@
+services:
+  pix-verifier:
+    image: pix-verifier:v2.0-dev
+    hostname: pix-verifier
+    container_name: pix-verifier
+    environment:
+      - TZ=America/Fortaleza
+      - DB_HOST=postgres
+      - DB_NAME=pixverifier
+      - DB_USER=dbadmin
+      - DB_PASS=f|Vyi2LjVG8DO7%2)Tz>9PfA&F[2]jQ6
+    volumes:
+      - ./src/html:/var/www/html
+    ports:
+      - "80:80"
+
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine3.19
+    hostname: postgres16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - TZ=America/Fortaleza
+      - POSTGRES_USER=dbadmin
+      - POSTGRES_PASSWORD=f|Vyi2LjVG8DO7%2)Tz>9PfA&F[2]jQ6
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: postgres_data
+    external: true    

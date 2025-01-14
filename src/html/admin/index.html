@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="shortcut icon" href="../assets/imgs/favicon.ico" type="image/x-icon">
+    <title>Pix Verifier</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-success-subtle">
+            <div class="container-fluid">
+                <a href="./index.html" class="navbar-brand">
+                    <img src="../assets/imgs/pix-verifier.png" width="250" height="auto" alt="">
+                </a>
+                <div class="navbar-nav align-items-center column-gap-3">
+                    <!-- TODO -->
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="alertBox" class="alert alert-warning mt-5 text-center" role="alert" style="display: none;">
+            <span id="alertText">Something goes wrong!</span>
+        </div>
+
+        <div id="login-box" class="row justify-content-center align-items-center mt-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Painel Administrativo</h3>
+                        <form action="authenticate.php" method="POST">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Usuário</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Digite seu usuário" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Senha</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Digite sua senha" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Entrar</button>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a href="./forgot-password.html" class="text-decoration-none">Esqueceu a senha?</a> |
+                            <a href="../index.html" class="text-decoration-none">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const alertBox = document.getElementById('alertBox');
+        const alertText = document.getElementById('alertText');
+
+        function getCookie(name) {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [key, value] = cookie.split('=');
+                if (key === name) {
+                    return decodeURIComponent(value);
+                }
+            }
+            return null;
+        }
+
+        const loginAttempt = getCookie('loginAttempt');
+
+        if (loginAttempt) {
+            alertText.textContent = loginAttempt;
+            alertBox.style.display = 'block';
+            
+            document.cookie = 'loginAttempt=; path=/admin; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        }
+    </script>
+</body>
+
+</html>

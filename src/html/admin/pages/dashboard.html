@@ -1,0 +1,83 @@
+<div class="container-fluid">
+  <h2 class="mb-4">Dashboard</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card d-flex flex-column h-100 bg-white shadow-sm rounded">
+        <img id="card-img" src="../../assets/imgs/terminal.png" class="card-img-top p-2" alt="...">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">Pix Service</h5>
+          <p class="card-text d-flex flex-column">
+            <span><strong>Status:</strong> <span id="service-status"></span></span>
+            <span id="status-description"></span>
+          </p>
+          <div class="row">
+            <div class="col d-grid">
+              <button id="start-service" type="button" class="btn btn-success btn-lg d-flex align-items-center justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-player-play">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />
+                </svg>
+              </button>
+            </div>
+            <div class="col d-grid">
+              <button id="stop-service" type="button" class="btn btn-danger btn-lg d-flex align-items-center justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-player-stop">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer mt-auto">
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card d-flex flex-column h-100 bg-white shadow-sm rounded">
+        <img id="card-img" src="../../assets/imgs/bank.png" class="card-img-top p-2" alt="...">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">Contas</h5>
+          <p class="card-text">Contas cadastradas: <strong>0</strong></p>
+        </div>
+        <div class="card-footer mt-auto">
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card d-flex flex-column h-100 bg-white shadow-sm rounded">
+        <img id="card-img" src="../../assets/imgs/transaction.png" class="card-img-top p-2" alt="...">
+        <div class="card-body text-center">
+          <h5 class="card-title text-primary">Total Conciliado</h5>
+          <p class="card-text">R$ <strong>999.999,99</strong></p>
+        </div>
+        <div class="card-footer mt-auto">
+          <small class="text-muted">Last updated 3 mins ago</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  import { getProcessStatus, startService, stopService } from '../../assets/js/service.js';
+  
+  const startBtn = document.getElementById('start-service');
+  const stopBtn = document.getElementById('stop-service');
+
+  document.addEventListener("DOMContentLoaded", () => {
+    getProcessStatus();
+    setInterval(getProcessStatus, 3000);
+  });
+
+  startBtn.addEventListener("click", () => {
+    startBtn.disabled = true;
+    startService();
+  });
+
+  stopBtn.addEventListener("click", () => {
+    stopBtn.disabled = true;
+    stopService();
+  });
+</script>

@@ -1,0 +1,216 @@
+
+<div class="container-fluid d-flex flex-column">
+    <div class="container p-3">
+        <form id="addAccount" action="">
+            <div class="row">
+                <div class="col-md-2 col-sm-12">
+                    <div class="mb-3">
+                        <label for="optBank" class="form-label">Banco</label>
+                        <select name="optBank" id="optBank" class="form-select">
+                            <option value="77" selected>077 - Banco Inter</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="mb-3">
+                        <label class="form-label" for="accountName">Nome da conta</label>
+                        <input class="form-control" type="text" id="accountName" name="accountName" placeholder="Informe um nome" required>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="mb-3">
+                        <label class="form-label" for="branchNumber">Informe a agência</label>
+                        <input class="form-control" type="text" id="branchNumber" name="branchNumber" placeholder="Apenas numeros" required>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12">
+                    <div class="mb-3">
+                        <label class="form-label" for="accountNumber">Informe a conta</label>
+                        <input class="form-control" type="text" id="accountNumber" name="accountNumber" placeholder="Apenas numeros" required>
+                    </div>
+                </div>
+                <div class="col align-self-end">
+                    <div class="mb-3">
+                        <input class="btn btn-primary" type="submit" id="btnSubmit" name="btnSubmit" value="Salvar">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container p-3">
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table caption-top align-middle table-striped">
+                <caption id="serviceStatus">Contas Cadastradas</span></caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Banco</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Agência</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="table-group-divider">
+                    <tr>
+                        <td>Inter</td>
+                        <td>Loja 1</td>
+                        <td>0001-0</td>
+                        <td>457845487-3</td>
+                        <td>
+                            <button class="btn btn-outline-primary edit-account" data-bs-toggle="modal" data-bs-target="#accountDetail"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg></button>
+                            <button class="btn btn-outline-danger delete-account" data-bs-toggle="modal" data-bs-target="#confirmationDialog"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Inter</td>
+                        <td>Loja 2</td>
+                        <td>0001-0</td>
+                        <td>521469257-7</td>
+                        <td><button class="btn btn-outline-primary edit-account"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-pencil"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg></button>
+                            <button class="btn btn-outline-danger delete-account"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg></button>
+                        </td>
+                    </tr>
+                </tbody>    
+            </table>
+        </div>
+        <!-- End Table -->
+    </div>
+</div>
+
+<!-- Modal Account Edit -->
+<div class="modal fade" id="accountDetail" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalTitle">Loja 1</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="clientID">Client ID</label>
+                    <input class="form-control" type="text" id="clientID" name="clientID" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="clientSecret">Client Secret</label>
+                    <input class="form-control" type="text" id="clientSecret" name="clientSecret" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="certFile" class="form-label" style="font-size: smaller;"><span id="certFileInfo"></span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">Certificado</span>
+                        <input type="file" name="certFile" id="certFile" class="form-control" accept=".crt">
+                    </div>
+                    <div class="form-text" id="basic-addon4">Tipo permitido (.ctr)</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="certKeyFile" class="form-label" style="font-size: smaller;"><span id="keyFileInfo"></span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">Chave</span>
+                        <input type="file" name="certKeyFile" id="certKeyFile" class="form-control" accept=".key">
+                    </div>
+                    <div class="form-text" id="basic-addon4">Tipo permitido (.key)</div>
+                </div>
+
+                <div>
+                    <label class="form-label" for="ignoredList">Remetentes Ignorados</label>
+                    <textarea class="form-control" rows="3" id="ignoredList" name="ignoredList" placeholder="Informe os CPF/CNPJ que deseja ignorar sem pontuação e separados por ponto e vígula (;)"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success save-account-detail">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M14 4l0 4l-6 0l0 -4" />
+                    </svg>    
+                    Gravar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Account Edit -->
+
+<!-- Popup Message -->
+<div class="modal fade" id="popupMsg" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalTitle"></h1>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <img class="popup-icon" src="">
+                </div>
+                <p class="mt-3 d-flex justify-content-center"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Popup Message -->
+
+<!-- Confirmation Dialog -->
+<div class="modal fade" id="confirmationDialog" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalTitle">Tem certeza?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <img class="popup-icon" src="../../assets/imgs/question-mark-icon.png">
+                </div>
+                <p id="dialogMessage" class="mt-3 d-flex justify-content-center"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmationDialog-yes" class="btn btn-outline-success" data-bs-dismiss="modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 12l5 5l10 -10" />
+                    </svg>    
+                    Sim
+                </button>
+                <button type="button" id="confirmationDialog-no" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M18 6l-12 12" />
+                        <path d="M6 6l12 12" />
+                    </svg>
+                    Não
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Confirmation Dialog -->
+<script src="../../assets/bootstrap/js/bootstrap.min.js"></script>
+<script type="module">
+    import { loadAccountTable, saveAccount } from '../../assets/js/accounts.js';
+
+    const submitNewAccount = document.getElementById('btnSubmit');
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        await loadAccountTable();
+    });
+
+    submitNewAccount.addEventListener("click", (sendForm) => {
+        sendForm.preventDefault();
+        const bank = document.getElementById('optBank');
+        const branchNumber = document.getElementById('branchNumber');
+        const accountNumber = document.getElementById('accountNumber');
+        const accountName = document.getElementById('accountName');
+
+        saveAccount(bank.value, branchNumber.value, accountNumber.value, accountName.value);
+
+    });
+</script>

@@ -1,0 +1,121 @@
+#filterBox {
+    padding: 20px 5px 10px 10px;
+    border-bottom: solid 1px rgb(206, 206, 206);
+    position: relative;
+}
+
+#divLabel {
+    font-size: smaller;
+    color: rgb(117, 117, 117);
+    position: absolute;
+    top: 0px;
+    left: 15px;
+    transform: translateY(-50%);
+    background-color: white;
+    padding: 0 5px;
+    z-index: 1;
+}
+
+#serviceStatus span {
+    width: 15px;
+    height: 15px;
+}
+
+.account-selector {
+    position: relative;
+}
+
+.account-selector .badge {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateY(-50%);
+    z-index: 20;
+}
+
+#pagination-box {
+    display: none;
+}
+
+.custom-tooltip {
+    font-style: italic;
+}
+
+.bank-logo-77 {
+    width: 75px;
+    height: auto;
+}
+
+.bank-logo-237 {
+    height: 40px;
+    width: auto;
+}
+
+.bank-logo-197 {
+    height: 20px;
+    width: auto;
+}
+
+.popup-icon {
+    height: 60px;
+    width: auto;
+}
+
+#viewLastTransactions {
+    display: none;
+}
+
+#newVersionIndicator {
+    display: none;
+}
+
+.form-check {
+    font-size: 20px;
+}
+
+.new-transaction {
+    background-color: #d1f7c4;
+    animation: pulse-animation 2s ease-in-out infinite;
+}
+
+.icon-tabler-pencil {
+    stroke: var(--bs-primary);
+}
+
+.icon-tabler-trash {
+    stroke: var(--bs-danger);
+}
+
+.btn-outline-primary:hover .icon-tabler-pencil {
+    stroke: white;
+}
+
+.btn-outline-danger:hover .icon-tabler-trash {
+    stroke: white;
+}
+
+#card-img {
+    max-width: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+}
+
+#status-description {
+    font-size: 0.7rem;
+    font-style: italic;
+}
+
+@keyframes pulse-animation {
+    0% { background-color: #d1f7c4; }
+    50% { background-color: #ffffff; }
+    100% { background-color: #d1f7c4; }
+}
+
+@media screen and (max-width: 1000px) {
+    #filterBox {
+        border: solid 1px rgb(206, 206, 206);
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+}
