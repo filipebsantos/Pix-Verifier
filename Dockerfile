@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     libpq-dev \
     postgresql-dev \
     libzip-dev \
+    tzdata \
     && docker-php-ext-install pdo pdo_pgsql pgsql zip \
     && apk del autoconf g++ make \
     && rm -rf /var/cache/apk/* /tmp/*
