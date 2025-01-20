@@ -1,6 +1,6 @@
 services:
   pix-verifier:
-    image: pix-verifier:v2.0
+    image: filipebezerrasantos/pix-verifier:v2.0.0-rc
     hostname: pix-verifier
     container_name: pix-verifier
     restart: unless-stopped
@@ -16,6 +16,9 @@ services:
       - "80:80"
     networks:
       - pixverifier_network
+    depends_on:
+      postgres:
+        condition: service_healthy 
 
   postgres:
     container_name: postgres
@@ -33,6 +36,11 @@ services:
       - "5432:5432"
     networks:
       - pixverifier_network
+    healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U dbadmin"]
+          interval: 5s
+          retries: 5
+          start_period: 10s
 
 volumes:
   postgres_data:
