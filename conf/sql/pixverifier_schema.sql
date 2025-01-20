@@ -2,6 +2,10 @@
 -- PostgreSQL database dump
 --
 
+CREATE DATABASE pixverifier;
+
+\c pixverifier
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -86,6 +90,15 @@ ALTER TABLE ONLY public.bankaccount
 
 ALTER TABLE ONLY public.receivedpix
     ADD CONSTRAINT receivedpix_bankaccount_fk FOREIGN KEY (accountid) REFERENCES public.bankaccount(accountid) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE TABLE public.users (
+    user_id serial PRIMARY KEY,
+    username character varying(100) NOT NULL,
+    pwd character varying(255) NOT NULL,
+    useraccess integer NOT NULL
+);
+
+ALTER TABLE public.users OWNER TO dbadmin;
 
 INSERT INTO public.users (username, pwd, useraccess) 
 VALUES ('admin', '$2y$10$Ve1qGNP9X.7nThu4LXOwVuWc57jN3PhvYl.b/ABFEuw8nE3LPSDVe', 2);
