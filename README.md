@@ -15,7 +15,8 @@ No momento o Pix Verifier funciona apenas para os **correntistas PJ do Banco Int
 
 ---
 ## Documentação
-Em andamento
+
+As instruções para instalação e uso encontra-se disponível em [filipebezerra.dev.br/docs/pixverifier](https://filipebezerra.dev.br/docs/pixverifier).
 
 ---
 Copyright (c) 2024 Filipe Bezerra
