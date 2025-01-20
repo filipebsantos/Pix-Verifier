@@ -95,6 +95,10 @@ Com isso finalizamos a configuração dos serviços.
 Na mesma pasta onde criou o `docker-compose.yaml`, crie uma nova pasta e dentro dela crie um arquivo chamado `database.sql` e cole o conteúdo abaixo:
 
 ``` sql title="database.sql" linenums="1"
+CREATE DATABASE pixverifier;
+
+\c pixverifier
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -115,7 +119,6 @@ CREATE TABLE public.bank (
     bankname character varying(100) NOT NULL
 );
 
-
 ALTER TABLE public.bank OWNER TO dbadmin;
 
 CREATE TABLE public.bankaccount (
@@ -132,7 +135,6 @@ CREATE TABLE public.bankaccount (
     tokenexpireat timestamp without time zone,
     ignoredsenders text
 );
-
 
 ALTER TABLE public.bankaccount OWNER TO dbadmin;
 
@@ -161,35 +163,9 @@ CREATE TABLE public.receivedpix (
     accountid integer NOT NULL
 );
 
-
 ALTER TABLE public.receivedpix OWNER TO dbadmin;
 
-CREATE TABLE public.users (
-    user_id integer NOT NULL,
-    username character varying(20) NOT NULL,
-    pwd character varying(64) NOT NULL,
-    useraccess integer NOT NULL
-);
-
-
-ALTER TABLE public.users OWNER TO dbadmin;
-
-CREATE SEQUENCE public.users_user_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.users_user_id_seq OWNER TO dbadmin;
-
-ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
-
 ALTER TABLE ONLY public.bankaccount ALTER COLUMN accountid SET DEFAULT nextval('public.bankaccount_accountid_seq'::regclass);
-
-ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
 
 ALTER TABLE ONLY public.bank
     ADD CONSTRAINT bank_pk PRIMARY KEY (bankid);
@@ -200,17 +176,22 @@ ALTER TABLE ONLY public.bankaccount
 ALTER TABLE ONLY public.receivedpix
     ADD CONSTRAINT receivedpix_pk PRIMARY KEY (e2eid);
 
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_id_pk UNIQUE (user_id);
-
 CREATE INDEX receivedpix_accountid_idx ON public.receivedpix USING btree (accountid);
 
 ALTER TABLE ONLY public.bankaccount
     ADD CONSTRAINT bankaccount_bank_fk FOREIGN KEY (bankid) REFERENCES public.bank(bankid) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
 ALTER TABLE ONLY public.receivedpix
     ADD CONSTRAINT receivedpix_bankaccount_fk FOREIGN KEY (accountid) REFERENCES public.bankaccount(accountid) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE TABLE public.users (
+    user_id serial PRIMARY KEY,
+    username character varying(100) NOT NULL,
+    pwd character varying(255) NOT NULL,
+    useraccess integer NOT NULL
+);
+
+ALTER TABLE public.users OWNER TO dbadmin;
 
 INSERT INTO public.users (username, pwd, useraccess) 
 VALUES ('admin', '$2y$10$Ve1qGNP9X.7nThu4LXOwVuWc57jN3PhvYl.b/ABFEuw8nE3LPSDVe', 2);
