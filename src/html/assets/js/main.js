@@ -27,7 +27,7 @@ async function autoUpdate() {
         
         if ((transactionsTable.rows.length >= 1) && (transactionsTable.rows[0].textContent === 'Nenhuma transação encontrada.')){
             await fetchTransactions('fetchTransactions', accountSelector.options[accountSelector.selectedIndex].value, formattedCurrentDate, formattedCurrentDate, '1');
-        } else {
+        } else if (accountSelector.options[accountSelector.selectedIndex].value != "null") {
             const lastTransactionTimestamp = transactionsTable.querySelector('tr td:nth-child(5)').textContent;
             const [datePart, timePart] = lastTransactionTimestamp.split(" ");
             const [day, month, year] = datePart.split("/");
@@ -68,15 +68,18 @@ async function checkForNewVersion() {
 
 document.addEventListener("DOMContentLoaded", async () => {
     await getServiceStatus();
-    await listAccounts();
-    await fetchTransactions('fetchTransactions', accountSelector.options[accountSelector.selectedIndex].value, formattedCurrentDate, formattedCurrentDate, '1');
     await checkForNewVersion();
-
-    setInterval(autoUpdate, 5000);
-
+    await listAccounts();
+    
+    if (accountSelector.options[accountSelector.selectedIndex].value != "null") {
+        await fetchTransactions('fetchTransactions', accountSelector.options[accountSelector.selectedIndex].value, formattedCurrentDate, formattedCurrentDate, '1');
+    }
+  
     accountSelector.addEventListener("change", async () => {
         await fetchTransactions('fetchTransactions', accountSelector.options[accountSelector.selectedIndex].value, formattedCurrentDate, formattedCurrentDate, '1');
     });
+
+    setInterval(autoUpdate, 5000);
 
     findByPayer.addEventListener('click', async (event) => {
         const payerDoc = document.getElementById('payerDoc');

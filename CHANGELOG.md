@@ -5,6 +5,7 @@
 ### Adicionado
 
 ### Corrigido
+- Erro ao solicitar transações mesmo quando não há contas cadastradas
 - Bug no autoupdate que não exibia a última transaferência tão logo fosse recebida
 
 ## 2.0.0-rc - 2025-01-20
