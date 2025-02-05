@@ -102,3 +102,6 @@ ALTER TABLE public.users OWNER TO dbadmin;
 
 INSERT INTO public.users (username, pwd, useraccess) 
 VALUES ('admin', '$2y$10$Ve1qGNP9X.7nThu4LXOwVuWc57jN3PhvYl.b/ABFEuw8nE3LPSDVe', 2);
+
+INSERT INTO public.bank (bankid, bankname)
+VALUES (77, 'Banco Inter');
