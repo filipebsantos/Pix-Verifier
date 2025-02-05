@@ -245,22 +245,38 @@
 
                         if ($accountId) {
                             
-                            if (isset($certFile)) {
+                            if (!empty($certFile)) {
                                 $certFileName = bin2hex(random_bytes(16)) . ".crt";
                             } else {
-                                $certFileName = '';
+                                $certFileName = null;
                             }
 
-                            if (isset($certKeyFile)) {
+                            if (!empty($certKeyFile)) {
                                 $certKeyFileName = bin2hex(random_bytes(16)) . ".key";
                             } else {
-                                $certKeyFileName = '';
+                                $certKeyFileName = null;
                             }
 
-                            if (!preg_match('/^(\d+)(;\d+)*$/', $ignoredSenders)) {
+                            if (!empty($ignoredSenders) && (!preg_match('/^(\d+)(;\d+)*$/', $ignoredSenders))) {
                                 LogHandler::stdlog("Ignored sender list with wrong format for account id '". $accountId ."'", LogHandler::ERROR_TYPE_ERROR);
                                 sendResponse(["message" => "Ignored sender list with wrong format", "code" => "AC40.5"], 400);
                                 exit;
+                            }
+
+                            if ($certFileName !== null) {
+                                if (!decodeCertificateFile($certFileName, $certFile, '/var/www/services/certs/inter/')){
+                                    LogHandler::stdlog("Failed to save certificate file to disk for account id '". $accountId ."'", LogHandler::ERROR_TYPE_ERROR);
+                                    sendResponse(["message" => "Failed to save certificate file to disk, try upload again.", "code" => "AC40.3"], 400);
+                                    exit;
+                                }
+                            }
+
+                            if ($certKeyFileName !== null) {
+                                if (!decodeCertificateFile($certKeyFileName, $certKeyFile, '/var/www/services/certs/inter/')){
+                                    LogHandler::stdlog("Failed to save certificate key file to disk for account id '". $accountId ."'", LogHandler::ERROR_TYPE_ERROR);
+                                    sendResponse(["message" => "Failed to save certificate key file to disk, try upload again.", "code" => "AC40.4"], 400);
+                                    exit;
+                                }
                             }
 
                             try{    
@@ -269,22 +285,6 @@
                                 LogHandler::stdlog("A database error occurred at 'createNewAccount'", LogHandler::ERROR_TYPE_CRITICAL);
                                 sendResponse(["message" => "It's not you! :("], 500);
                                 exit;
-                            }
-
-                            if ($certFileName !== '') {
-                                if (!decodeCertificateFile($certFileName, $certFile, '/var/www/services/certs/inter/')){
-                                    LogHandler::stdlog("Failed to save certificate file to disk for account id '". $accountId ."'", LogHandler::ERROR_TYPE_ERROR);
-                                    sendResponse(["message" => "Failed to save certificate file to disk, try upload again.", "code" => "AC40.3"], 400);
-                                    exit;
-                                }
-                            }
-
-                            if ($certKeyFileName !== '') {
-                                if (!decodeCertificateFile($certKeyFileName, $certKeyFile, '/var/www/services/certs/inter/')){
-                                    LogHandler::stdlog("Failed to save certificate key file to disk for account id '". $accountId ."'", LogHandler::ERROR_TYPE_ERROR);
-                                    sendResponse(["message" => "Failed to save certificate key file to disk, try upload again.", "code" => "AC40.4"], 400);
-                                    exit;
-                                }
                             }
 
                             sendResponse(["message" => "Updated"], 200);

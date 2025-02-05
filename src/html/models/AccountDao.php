@@ -137,21 +137,62 @@ class AccountDAO extends DAO
         }
     }
 
-    public function updateAccountDetail(int $accountId, string $clientId, string $clientSecret, string $certFile, string $certKeyFile, string $ignoredSenders)
+    // public function updateAccountDetail(int $accountId, string $clientId, string $clientSecret, string $certFile, string $certKeyFile, string $ignoredSenders)
+    // {
+    //     $stmt = $this->database->prepare("UPDATE bankaccount SET
+    //                                         clientid = :clientid,
+    //                                         clientsecret = :clientsecret,
+    //                                         certfile = :certfile,
+    //                                         certkeyfile = :certkeyfile,
+    //                                         ignoredsenders = :ignoredsenders
+    //                                     WHERE accountid = :accountid");
+    //     $stmt->bindValue(":accountid", $accountId, PDO::PARAM_INT);
+    //     $stmt->bindValue(":clientid", $clientId, PDO::PARAM_STR);
+    //     $stmt->bindValue(":clientsecret", $clientSecret, PDO::PARAM_STR);
+    //     $stmt->bindValue(":certfile", $certFile, PDO::PARAM_STR);
+    //     $stmt->bindValue(":certkeyfile", $certKeyFile, PDO::PARAM_STR);
+    //     $stmt->bindValue(":ignoredsenders", $ignoredSenders, PDO::PARAM_STR);
+
+    //     try {
+    //         return $stmt->execute();
+    //     } catch (PDOException $pdoError) {
+    //         LogHandler::stdlog($pdoError->getMessage(), LogHandler::ERROR_TYPE_CRITICAL);
+    //         throw new DAOException("Database error", 10);
+    //     }
+    // }
+    public function updateAccountDetail(int $accountId, string $clientId, string $clientSecret, ?string $certFile, ?string $certKeyFile, string $ignoredSenders)
     {
-        $stmt = $this->database->prepare("UPDATE bankaccount SET
-                                            clientid = :clientid,
-                                            clientsecret = :clientsecret,
-                                            certfile = :certfile,
-                                            certkeyfile = :certkeyfile,
-                                            ignoredsenders = :ignoredsenders
-                                        WHERE accountid = :accountid");
+        // Create an array without optional arguments
+        $options = [
+            "clientid" => $clientId,
+            "clientsecret" => $clientSecret,
+            "ignoredsenders" => $ignoredSenders
+        ];
+
+        // Add cert's file name if not empty
+        if (!empty($certFile)) {
+            $options["certfile"] = $certFile;
+        }
+
+        // Add cert's key file name if not empty
+        if (!empty($certFile)) {
+            $options["certkeyfile"] = $certKeyFile;
+        }
+
+        // Mount query parts dinamically
+        $queryParts = [];
+        foreach ($options as $column => $value) {
+            $queryParts[] = "{$column} = :{$column}";
+        }
+        $sqlClause = implode(', ', $queryParts);
+
+        $stmt = $this->database->prepare("UPDATE bankaccount SET {$sqlClause} WHERE accountid = :accountid");
+
+        // Create bind parameters
+        foreach($options as $column => $value) {
+            $stmt->bindValue(":{$column}", $value, PDO::PARAM_STR);
+        }
         $stmt->bindValue(":accountid", $accountId, PDO::PARAM_INT);
-        $stmt->bindValue(":clientid", $clientId, PDO::PARAM_STR);
-        $stmt->bindValue(":clientsecret", $clientSecret, PDO::PARAM_STR);
-        $stmt->bindValue(":certfile", $certFile, PDO::PARAM_STR);
-        $stmt->bindValue(":certkeyfile", $certKeyFile, PDO::PARAM_STR);
-        $stmt->bindValue(":ignoredsenders", $ignoredSenders, PDO::PARAM_STR);
 
         try {
             return $stmt->execute();
