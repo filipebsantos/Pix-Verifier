@@ -175,7 +175,7 @@ class AccountDAO extends DAO
         }
 
         // Add cert's key file name if not empty
-        if (!empty($certFile)) {
+        if (!empty($certKeyFile)) {
             $options["certkeyfile"] = $certKeyFile;
         }
 
