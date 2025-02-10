@@ -18,25 +18,8 @@ Se você baixou o repositório do Github, localize dentro da pasta onde você ba
 
 ``` yaml title="docker-compose.yaml" linenums="1"
 services:
-  postgres:
-    container_name: postgres
-    image: postgres:16-alpine3.19
-    hostname: postgres16
-    restart: unless-stopped
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./sql:/docker-entrypoint-initdb.d
-    environment:
-      - TZ=America/Fortaleza
-      - POSTGRES_USER=dbadmin
-      - POSTGRES_PASSWORD=SENHA_BANCO_DE_DADOS
-    ports:
-      - "5432:5432"
-    networks:
-      - pixverifier_network
-
   pix-verifier:
-    image: filipebezerrasantos/pix-verifier:v2.0
+    image: filipebezerrasantos/pix-verifier:v2.0.0-rc1
     hostname: pix-verifier
     container_name: pix-verifier
     restart: unless-stopped
@@ -45,13 +28,38 @@ services:
       - DB_HOST=postgres
       - DB_NAME=pixverifier
       - DB_USER=dbadmin
-      - DB_PASS=SENHA_BANCO_DE_DADOS
+      - DB_PASS=f|Vyi2LjVG8DO7%2)Tz>9PfA&F[2]jQ6
     volumes:
       - pixverifier_certs:/var/www/services/certs
     ports:
       - "80:80"
     networks:
       - pixverifier_network
+    depends_on:
+      postgres:
+        condition: service_healthy 
+
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine3.19
+    hostname: postgres16
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./conf/sql:/docker-entrypoint-initdb.d
+    environment:
+      - TZ=America/Fortaleza
+      - POSTGRES_USER=dbadmin
+      - POSTGRES_PASSWORD=f|Vyi2LjVG8DO7%2)Tz>9PfA&F[2]jQ6
+    ports:
+      - "5432:5432"
+    networks:
+      - pixverifier_network
+    healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U dbadmin"]
+          interval: 5s
+          retries: 5
+          start_period: 10s
 
 volumes:
   postgres_data:
@@ -95,6 +103,10 @@ Com isso finalizamos a configuração dos serviços.
 Na mesma pasta onde criou o `docker-compose.yaml`, crie uma nova pasta e dentro dela crie um arquivo chamado `database.sql` e cole o conteúdo abaixo:
 
 ``` sql title="database.sql" linenums="1"
+--
+-- PostgreSQL database dump
+--
+
 CREATE DATABASE pixverifier;
 
 \c pixverifier
@@ -196,6 +208,8 @@ ALTER TABLE public.users OWNER TO dbadmin;
 INSERT INTO public.users (username, pwd, useraccess) 
 VALUES ('admin', '$2y$10$Ve1qGNP9X.7nThu4LXOwVuWc57jN3PhvYl.b/ABFEuw8nE3LPSDVe', 2);
 
+INSERT INTO public.bank (bankid, bankname)
+VALUES (77, 'Banco Inter');
 ```
 
 Esse arquivo tem a estrutura do banco dados que o Pix Verifier precisa para funcionar. Ao final sua estrutura de diretórios deve estar mais ou menos assim:
