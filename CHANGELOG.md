@@ -1,5 +1,13 @@
 # Changelog
 
+## Não lançado
+
+### Adicionado
+
+- Nova interface para página de logs no painel administrativo
+
+### Corrigido
+
 ## 2.0.0-rc1 - 2025-02-10
 
 ### Adicionado
