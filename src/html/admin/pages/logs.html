@@ -1,9 +1,33 @@
-<div class="container d-flex mt-3" style="height: 80vh;">
-    <div class="d-flex" style="width: 280px;">
-        <select class="form-select" name="logSelector" id="logSelector" multiple aria-label="Multiple select example" style="height: 100%;"></select>
-    </div>
-    <div class="flex-fill">
-        <textarea name="logContent" id="logContent" style="width: 100%; height: 100%;" disabled>Escolha um log da lista ao lado com duplo clique para baixar seu conteúdo.</textarea>
+<div class="container-fluid d-flex flex-grow-1">
+    <div class="row flex-grow-1 w-100">
+        <!-- Lista de Logs -->
+        <div class="col-lg-3 d-flex flex-column">
+            <div class="card flex-grow-1 overflow-auto">
+                <div class="card-header bg-primary text-white">Arquivos de Log</div>
+                <ul class="list-group list-group-flush" id="logSelector" style="overflow-y: auto; max-height: 70vh;">
+                </ul>
+            </div>
+        </div>
+        <!-- Exibição de Logs -->
+        <div class="col-lg-9 d-flex flex-column">
+            <div class="card flex-grow-1 d-flex flex-column" style="height: 100%;">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    Conteúdo do Log
+                    <div class="spinner-border text-light" role="status" style="display: none;">
+                        <span class="visually-hidden">Aguarde...</span>
+                      </div>
+                    <div class="form-check form-switch fs-6" style="display: none;">
+                        <input class="form-check-input" type="checkbox" role="switch" name="swtAutoReload" id="swtAutoReload" checked>
+                        <label class="form-check-label" for="swtAutoReload">Auto Reload</label>
+                    </div>
+                </div>
+                <div class="card-body overflow-auto" style="background-color: #f8f9fa; height: 100%; max-height: 70vh;">
+                    <pre id="logContent">
+                        
+                    </pre>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script src="../../assets/bootstrap/js/bootstrap.min.js"></script>
@@ -13,27 +37,36 @@
 
     const logSelector = document.getElementById('logSelector');
     const logContent = document.getElementById('logContent');
+    const formSwitch = document.querySelector('.form-switch');
+    const swtAutoReload = document.getElementById('swtAutoReload');
 
-    function currentLogUpdate() {
-        if (logSelector && logSelector.options && logSelector.selectedIndex !== undefined) {
-            const selectedOption = logSelector.options[logSelector.selectedIndex];
-            if (selectedOption && selectedOption.value === "pix-service.log") {
-                // Update current log
-                tailLog(logContent, selectedOption.value);
-            }
-        }
+    if (window.sessionStorage.getItem('activeLog')) {
+        window.sessionStorage.clear();
     }
 
     logList(logSelector); // Get available log files
 
     document.addEventListener('DOMContentLoaded', () => {
-        setInterval(currentLogUpdate, 5000);
+        setInterval(() => {
+            if (window.sessionStorage.getItem('activeLog') && swtAutoReload.checked === true) {
+                tailLog(logContent, sessionStorage.getItem('activeLog'));
+            }
+        }, 5000);
     });
 
     logSelector.addEventListener('dblclick', (event) => {
-        const selectedOption = event.target;
-        console.log(`Baixando arquivo ${selectedOption.value}...`);
-        tailLog(logContent, selectedOption.value);
+        const selectedLog = event.target;
+        
+        tailLog(logContent, selectedLog.innerText);
+
+        if (selectedLog.innerText === 'pix-service.log') {
+            window.sessionStorage.setItem('activeLog', selectedLog.innerText);
+            formSwitch.style.display = 'block';
+            if (swtAutoReload.checked === false) swtAutoReload.checked = true;
+        } else {
+            formSwitch.style.display = 'none';
+            window.sessionStorage.clear();
+        }
     });
     
 </script>

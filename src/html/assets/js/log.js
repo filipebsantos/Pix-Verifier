@@ -42,12 +42,18 @@ export async function logList(selector) {
 
     selector.textContent = '';
 
-    for (let index = 0; index < list.length; index++) {
-        const logOption = document.createElement('option');
-        logOption.text = list[index];
-        logOption.value = list[index];
-
-        selector.add(logOption);
+    if (list.length === 0) {
+        const logOption = document.createElement('li');
+        logOption.classList.add('list-group-item');
+        logOption.innerText = 'Não há logs'
+        selector.appendChild(logOption);
+    } else {
+        for (let index = 0; index < list.length; index++) {
+            const logOption = document.createElement('li');
+            logOption.classList.add('list-group-item');
+            logOption.innerText = list[index];
+            selector.appendChild(logOption);
+        }
     }
 }
  /**
@@ -56,7 +62,7 @@ export async function logList(selector) {
   * @param {string} fileName
   */
 export async function tailLog(textArea, fileName) {
-    textArea.textContent = '';
+    textArea.textContent = 'Baixando arquivo de log, aguarde...';
 
     if (fileName === 'pix-service.log') {
 
@@ -68,7 +74,7 @@ export async function tailLog(textArea, fileName) {
         const logContent = await apiRequest(payload, logUrlApi);
         textArea.textContent = logContent['logContent'];
     } else {
-        fetchLogFile(fileName, textArea);
+        fetchLogFile(textArea, fileName);
     }
 
     requestAnimationFrame(() => {
@@ -80,10 +86,13 @@ export async function tailLog(textArea, fileName) {
  * 
  * @param {string} filename 
  */
-async function fetchLogFile(filename, textArea) {
+async function fetchLogFile(textArea, filename) {
     const textarea = textArea;
+    const showSpinner = document.querySelector('.spinner-border');
  
     try {
+        showSpinner.style.display = 'block';
+
         // Faz a requisição
         const response = await fetch(logUrlApi, {
             method: 'POST',
@@ -110,6 +119,8 @@ async function fetchLogFile(filename, textArea) {
         textarea.textContent = logText;
     } catch (error) {
         textarea.textContent = `Erro ao baixar log: ${error.message}`;
+    } finally {
+        showSpinner.style.display = 'none';
     }
 }
 

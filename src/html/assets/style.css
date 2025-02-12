@@ -106,6 +106,12 @@
     font-style: italic;
 }
 
+#logContent {
+    height: 400px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
+
 @keyframes pulse-animation {
     0% { background-color: #d1f7c4; }
     50% { background-color: #ffffff; }

@@ -33,7 +33,9 @@
         }
     
         fclose($f);
-    
+
+        if (empty($data)) $data = 'Arquivo de log vazio...';
+
         $dataLines = explode("\n", $data);
         $lastLines = array_slice($dataLines, -$lines);
         
