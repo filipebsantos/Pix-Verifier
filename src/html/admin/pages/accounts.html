@@ -194,10 +194,33 @@
 </div>
 <!-- Confirmation Dialog -->
 <script src="../../assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../assets/js/imask.js"></script>
 <script type="module">
     import { loadAccountTable, saveAccount } from '../../assets/js/accounts.js';
+    import { popupMessage } from '../../assets/js/popup.js';
 
     const submitNewAccount = document.getElementById('btnSubmit');
+    const bank = document.getElementById('optBank');
+    const branchNumber = document.getElementById('branchNumber');
+    const accountNumber = document.getElementById('accountNumber');
+    const accountName = document.getElementById('accountName');
+
+    let maskedBranchNumer = IMask(branchNumber, {
+        mask: '0000-0',
+    });
+
+    let maskedAccountNumber = IMask(accountNumber, {
+        mask: [
+            '0-0',
+            '00-0',
+            '000-0',
+            '0000-0',
+            '00000-0',
+            '000000-0',
+            '0000000-0',
+            '00000000-0',
+        ]
+    });
 
     document.addEventListener("DOMContentLoaded", async () => {
         await loadAccountTable();
@@ -205,12 +228,11 @@
 
     submitNewAccount.addEventListener("click", (sendForm) => {
         sendForm.preventDefault();
-        const bank = document.getElementById('optBank');
-        const branchNumber = document.getElementById('branchNumber');
-        const accountNumber = document.getElementById('accountNumber');
-        const accountName = document.getElementById('accountName');
-
-        saveAccount(bank.value, branchNumber.value, accountNumber.value, accountName.value);
+        if(bank.value !== '' && maskedBranchNumer.unmaskedValue !== '' && maskedAccountNumber.unmaskedValue !== '' && accountName.value !== ''){
+            saveAccount(bank.value, maskedBranchNumer.unmaskedValue, maskedAccountNumber.unmaskedValue, accountName.value.trim());
+        } else {
+            popupMessage('Cadastrar Conta', 'alert', 'Preencha todos os campo antes de cadastrar um conta!');
+        }
 
     });
 </script>
